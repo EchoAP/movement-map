@@ -41,26 +41,35 @@ This file shows:
 - Grouping by movement chain, tiebroken by pattern
 - Group type derivation from size (straightSets / superset / circuit)
 
-### `pages/FlowDay.jsx`
+### `pages/FlowDay.jsx` (excerpt)
 
-The Flow Day Mode page.
+Two slices from the Flow Day Mode page.
 
-Flow Day is organized into four TimeBlocks (Morning, Midday, Afternoon,
-Evening). Each TimeBlock owns its own Card collection and curation state.
-Morning is heavier than the others — larger exercise cap, its own default
-purposes, and a "Fix Morning" affordance that establishes the current
-working Morning as a recurring default.
+The first shows how the Mode is structured: four TimeBlocks, each owning
+its own Card collection, curation selection, fixed flag, and messages. The
+second shows the Morning curation path — from selection through
+`curateCard()` to state update and persistence — and the "Fix Morning"
+affordance that establishes the current working Morning as a recurring
+default.
 
-This file shows how a Mode orchestrates: curation, per-TimeBlock state,
-persistence, manual editing, and Card operations.
+The full file contains the Add Sequence variants (Keep Filters, New
+Curation, Custom Build), exercise editing handlers, completion tracking,
+and the render.
 
-### `pages/FullBody.jsx`
+### `pages/FullBody.jsx` (excerpt)
 
-The Full Body Mode page.
+Two slices from the Full Body Mode page.
 
-This file shows a different Mode shape from Flow Day. Where Flow Day has
-four independently curated TimeBlocks, Full Body curates one workout as a
-whole and organizes the result into groups.
+The first shows the traversal model that walks a group's sets in the
+order they are performed. This matters because supersets and circuits
+interleave sets across exercises, so "the current set" cannot be derived
+by finding the first incomplete set in linear order.
+
+The second shows how the page loads a persisted workout, calls
+`curateFullBody()`, and logs a set while advancing the cursor.
+
+The full file contains the render, the exercise picker handlers,
+prescription editing, and finish/discard logic.
 
 ---
 
