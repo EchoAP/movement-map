@@ -102,6 +102,24 @@ Movement Map is a fitness and movement-education application. It is not:
 
 Any accessibility-oriented feature remains within Movement Map's fitness and movement-education scope rather than presenting the application as medical rehabilitation.
 
+## Repository Contents
+
+This repository documents Movement Map. It contains:
+
+- `README.md` — this file
+- `VISION.md`, `PURPOSE.md`, `PRINCIPLES.md` — product philosophy
+- `ROADMAP.md` — build sequence and current state
+- `ARCHITECTURE.md` — how the code is organized
+- `code-samples/` — selected source files from the private application
+
+The full application source is private. The `code-samples/` folder
+contains a small set of files chosen to show how the project is built:
+eligibility filtering, Mode-specific curation, and two Mode pages (shown
+as excerpts) that demonstrate different structures.
+
+See `code-samples/README.md` for details on what each file shows and why
+it was selected.
+
 ## Running the Project
 
 From the project directory:
