@@ -87,7 +87,7 @@ The movement library is the authoritative source for exercise definitions. Worko
 - [x] Define movement-plane metadata.
 - [x] Define movement-chain metadata.
 - [x] Define anatomy metadata.
-- [ ] Define joint relationships.
+- [x] Define joint relationships.
 - [x] Define equipment requirements/options.
 - [x] Define capability/accessibility metadata.
 - [x] Define coaching/instructional information.
@@ -99,7 +99,7 @@ The movement library is the authoritative source for exercise definitions. Worko
 - [x] Establish exercise IDs as stable references for use throughout the application.
 - [ ] Continue expanding and refining the exercise library.
 - [ ] Continue adding movement-specific coaching notes, best practices, and common mistakes where useful.
-- [ ] Audit and refine exercise metadata against the finalized capability/progression framework.
+- [/] Audit and refine exercise metadata against the finalized capability/progression framework.
 - [ ] Add/expand exercise demonstrations and instructional media later.
 - [ ] Add anatomy metadata to exercise objects.
       anatomy.js defines muscles and joints. Wire primaryMuscles,
@@ -252,7 +252,7 @@ Movement Map should determine where a person is starting rather than simply aski
 Anatomy is not a Full Body feature. It is an application-wide foundation that can eventually inform curation, history, recommendations, and movement balance across every Mode.
 
 - [x] Establish anatomy as part of exercise metadata.
-- [ ] Establish muscles and joints as exercise-level relationships.
+- [/] Establish muscles and joints as exercise-level relationships.
 - [x] Establish/complete shared anatomy vocabulary.
 - [ ] Refine muscle-group and regional terminology.
 - [ ] Connect anatomy metadata to stored workout/routine information.
@@ -262,7 +262,7 @@ Anatomy is not a Full Body feature. It is an application-wide foundation that ca
 - [ ] Use anatomy to identify neglected regions/muscle groups.
 - [ ] Use anatomy as one input into future recommendations.
 - [ ] Consider whole-body coverage rather than merely counting exercises or workouts.
-- [ ] Backfill anatomy metadata across the existing Exercise Library.
+- [x] Backfill anatomy metadata across the existing Exercise Library.
       New and edited exercises should include anatomy from this point
       forward. Existing exercises should be brought up to date before
       anatomy-driven curation is implemented.
