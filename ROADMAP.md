@@ -99,12 +99,11 @@ The movement library is the authoritative source for exercise definitions. Worko
 - [x] Establish exercise IDs as stable references for use throughout the application.
 - [ ] Continue expanding and refining the exercise library.
 - [ ] Continue adding movement-specific coaching notes, best practices, and common mistakes where useful.
-- [/] Audit and refine exercise metadata against the finalized capability/progression framework.
+- [ ] Audit and refine exercise metadata against the finalized capability/progression framework.
 - [ ] Add/expand exercise demonstrations and instructional media later.
-- [ ] Add anatomy metadata to exercise objects.
-      anatomy.js defines muscles and joints. Wire primaryMuscles,
-      secondaryMuscles, and joints into the Exercise Library. Add going
-      forward rather than backfilling all at once.
+- [x] Add anatomy metadata to exercise objects.
+      anatomy.js defines muscles and joints. Anatomy is now part of the
+      exercise schema and populated on current library entries.
 - [ ] Backfill movement metadata on older Exercise Library entries.
       Some exercises were defined before movementFamilies,
       movementChains, movementPlanes, movementPatterns, and progression
@@ -252,20 +251,24 @@ Movement Map should determine where a person is starting rather than simply aski
 Anatomy is not a Full Body feature. It is an application-wide foundation that can eventually inform curation, history, recommendations, and movement balance across every Mode.
 
 - [x] Establish anatomy as part of exercise metadata.
-- [/] Establish muscles and joints as exercise-level relationships.
+- [x] Establish muscles and joints as exercise-level relationships.
 - [x] Establish/complete shared anatomy vocabulary.
-- [ ] Refine muscle-group and regional terminology.
+- [x] Refine muscle-group and regional terminology.
+- [x] Backfill anatomy metadata across the existing Exercise Library.
 - [ ] Connect anatomy metadata to stored workout/routine information.
+      Completions snapshot anatomy per exercise. Working routines and
+      fixed routines still reference exercises by ID and rely on library
+      lookup.
 - [ ] Track anatomical coverage across completed movement.
 - [ ] Aggregate anatomical coverage over weekly activity.
+      aggregate.js computes muscle counts over a window. Needs to be
+      consumed as a user-facing or curation-facing signal, not just
+      debug output.
 - [ ] Use anatomy to identify repeated muscular emphasis.
 - [ ] Use anatomy to identify neglected regions/muscle groups.
+      intelligence.js produces a neglected-muscles list. Not yet used.
 - [ ] Use anatomy as one input into future recommendations.
 - [ ] Consider whole-body coverage rather than merely counting exercises or workouts.
-- [x] Backfill anatomy metadata across the existing Exercise Library.
-      New and edited exercises should include anatomy from this point
-      forward. Existing exercises should be brought up to date before
-      anatomy-driven curation is implemented.
 
 #### Joint Preparation Distinction
 
@@ -304,7 +307,7 @@ Cards are exercise containers/groupings, not routines. A Mode is the routine/wor
 ### Curation Rules
 
 - [x] Purpose filtering uses OR logic.
-- [x] Classification filtering uses AND logic.
+- [x] Classification filtering uses OR logic.
 - [x] Equipment filtering uses OR logic.
 - [x] Explicit exercise exclusions are respected by the filter layer.
 - [x] Automatic curation can exclude exercises already used within the current Mode.
@@ -463,21 +466,37 @@ Full Body is the Mode that most closely resembles a conventional fitness-app wor
 
 Each Full Body exercise occurrence should have workout-specific prescription data without changing the authoritative exercise-library definition.
 
-- [ ] Add mutable sets.
-- [ ] Add mutable reps.
+- [/] Add mutable sets.
+      Sets exist on each exercise occurrence. Mutable through state, but
+      no UI to edit them yet.
+- [/] Add mutable reps.
 - [ ] Add mutable weight/load where appropriate.
 - [ ] Add mutable band type/resistance where appropriate.
-- [ ] Respect exercise-specific equipment requirements.
-- [ ] Generate sensible starting prescriptions.
-- [ ] Allow users to modify generated prescriptions.
-- [ ] Keep prescriptions separate from library exercise definitions.
-- [ ] Persist customized prescriptions with the workout.
+- [x] Respect exercise-specific equipment requirements.
+      scoring.js generatePrescription() receives the exercise and its
+      equipment.
+- [x] Generate sensible starting prescriptions.
+      scoring.js generates a prescription per exercise during curation.
+      expandPrescriptionToSets() expands it into the set array the
+      workout shape uses.
+- [/] Allow users to modify generated prescriptions.
+      Data model supports it. No UI yet.
+- [x] Keep prescriptions separate from library exercise definitions.
+- [/] Persist customized prescriptions with the workout.
+      Prescriptions are stored inside the workout groups. Customization
+      UI does not exist, so nothing custom is persisted yet.
 - [ ] Preserve compatibility with future execution/timer functionality.
 
 ### Full Body Completion Model
 
 Full Body completion is workout-level, not card-level. Full Body cards are not marked complete individually. Sets are logged as they are performed. The workout is marked finished at the end. Completion records at the workout level, once, including every exercise's prescription.
 
+- [x] Record workout-level completion.
+      completion.js recordWorkoutCompletion() writes planned duration,
+      actual duration (currently null), exercise count, and per-exercise
+      prescriptions to the completion record for the date.
+- [ ] Trigger workout-level completion from the UI.
+      The write path exists. The page does not yet call it.
 - [ ] Define set-level completion behavior.
 - [ ] Allow individual sets to be marked complete.
 - [ ] Support variable numbers of sets.
@@ -533,18 +552,42 @@ Movement history should eventually become an active source of intelligence rathe
       movementPatterns, level. Cards are not stored; the exercises are.
 - [x] Record workout/Mode context.
 - [x] Record Card/Sequence context where meaningful.
-- [ ] Record relevant prescription information.
+- [/] Record relevant prescription information.
+      Full Body workout completion carries per-exercise prescriptions.
+      Flow Day and Grab & Go do not have prescriptions.
 - [ ] Record set-level Full Body performance.
+      Data model supports it. UI does not exist yet.
+- [x] Build the aggregation layer.
+      engine/aggregate.js reads completion records and produces pure
+      counts over a time window: patterns, classifications, chains,
+      planes, muscles (weighted), joints, purposes, exercises, and a
+      raw session list. Aggregation counts; it does not interpret.
+- [x] Build the intelligence layer (v1).
+      engine/intelligence.js reads aggregation output and produces
+      interpretation: muscle recovery (0-100, tier-based windows),
+      neglected muscles (absolute and relative), pattern balance
+      (under / balanced / over), and per-exercise readiness scores.
+      Currently surfaced via History debug output only.
 - [ ] Build weekly movement aggregation.
+      Aggregate exists. What remains is a defined weekly window and
+      consumption by curation or the user.
 - [ ] Track recent exercise usage.
 - [ ] Track muscle-group emphasis.
+      aggregate.js computes muscle counts. Not yet consumed.
 - [ ] Track movement-pattern distribution.
+      aggregate.js computes pattern counts. Intelligence classifies
+      balance. Not yet consumed.
 - [ ] Track upper/lower/core distribution.
 - [ ] Track whole-body anatomical coverage.
-- [ ] Estimate muscular fatigue/recovery from recent activity.
+- [x] Estimate muscular fatigue/recovery from recent activity.
+      intelligence.js walks sessions chronologically, applies per-muscle
+      work cost, advances recovery by tier window, and clamps to 0-100.
+      Currently an internal model, not surfaced to the user.
 - [ ] Establish appropriate recovery heuristics without presenting them as medical determinations.
 - [ ] Identify repeated emphasis.
-- [ ] Identify neglected movement regions.
+- [x] Identify neglected movement regions.
+      intelligence.js produces neglectedMuscles (absolute and relative).
+      Not yet consumed.
 - [ ] Identify exercises that may benefit from variation.
 - [ ] Use history to inform future curation ranking.
 - [ ] Feed historical information into exercise suggestions.
@@ -578,6 +621,17 @@ Movement Map should eventually make recommendations using more than the filters 
 - [ ] Develop rules for balancing useful repetition with variation.
 - [ ] Avoid recommendations becoming so restrictive that users lose control.
 - [ ] Allow different Modes to use the intelligence differently according to their purpose.
+- [ ] Consume readiness scores in curation.
+      intelligence.js produces a readiness score per exercise
+      (scoreExerciseReadiness). Nothing currently uses it. Curation
+      (curateCard, curateFullBody) still takes the first N eligible
+      exercises. This is the next step in adaptive curation.
+- [ ] Define muscle tier vocabulary.
+      small (48h), large (72h), core (48h) tiers currently live inside
+      intelligence.js. Evaluate whether they should live in a vocabulary
+      file like anatomy.js does. Not urgent — recovery is an intelligence
+      concern — but the tier values themselves are arguably shared
+      vocabulary.
 - [ ] Variation in curation output.
       curateCard currently takes the first N eligible exercises in
       library order. Selecting the same filters produces the same
@@ -661,11 +715,10 @@ Personalization should make Movement Map easier to use, not create another sourc
 - [ ] Learn from user choices without becoming intrusive.
 - [ ] Avoid streaks, punishment, or "missed workout" mechanics.
 - [ ] Add completion notes.
-      Roadmap already lists notes as an item, but the specific intent
-      that emerged: notes attach to completions, especially Full Body,
-      where a user may want to record that an exercise was difficult or
-      a modified version was done. May eventually apply to Flow Day and
-      Grab & Go, but the attachment point is not designed yet.
+      Notes attach to completions, especially Full Body, where a user
+      may want to record that an exercise was difficult or a modified
+      version was done. May eventually apply to Flow Day and Grab & Go,
+      but the attachment point is not designed yet.
 
 ## Later — Experience Enhancements
 
@@ -676,11 +729,11 @@ Personalization should make Movement Map easier to use, not create another sourc
 - [ ] Explore AI-assisted visual or instructional features.
 - [ ] Improve saved/favorite experiences.
 - [ ] Continue improving accessibility and reduced-decision-fatigue interactions based on actual use.
-- [ ] Build History page.
-      A UI page that reads completion records and shows what was done
-      by date (calendar or list). Not yet designed or built. The write
-      side exists; the read side is the next UI feature under this
-      section. storage.js has getCompletionsForRange ready.
+- [/] Build History page.
+      A UI page exists and shows a 7-day window of completion records
+      with day summaries and expandable exercise detail. Still under
+      development. Currently also serves as the aggregate/intelligence
+      debug view.
 - [ ] History view must be accessible on any device size.
       Noted because a mobile-first overlay/modal was considered for the
       picker and rejected. Whatever History becomes, it must work on
@@ -693,6 +746,14 @@ These are not blockers. They are tracked so they are not forgotten.
 - [ ] Card titles in Full Body are derived from the first exercise's classification and do not accurately describe mixed Card contents.
 - [ ] full-body-message may not have styling. Confirm whether it needs styling to match other Mode messages.
 - [ ] CSS organization across files is inconsistent. See Current — Product & Technical Foundation.
+- [ ] storage.js header comment is stale.
+      It still lists completions as part of movement-map-state.
+      Completions moved to their own key space
+      (movement-map-completions:YYYY-MM-DD). Update during the current
+      scoring/intelligence/completion reorganization.
+- [ ] scoring.js currently carries two responsibilities.
+      Prescription generation and work cost calculation live in the same
+      file. The split is under review during the current reorganization.
 
 ## Maybe — Longer-Term Exploration
 
